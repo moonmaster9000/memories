@@ -1,2 +1,3 @@
 require 'couchrest_model'
-require 'memories/memories.rb'
+require 'memories/attachment.rb'
+require 'memories/base.rb'
