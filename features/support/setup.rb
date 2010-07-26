@@ -6,7 +6,8 @@ require 'memories'
 COUCHDB_SERVER = CouchRest.new "http://localhost:5984"
 VERSIONING_DB = COUCHDB_SERVER.database!('memories_test')
 
-class Book < CouchRest::Model::Versioned::Base
+class Book < CouchRest::Model::Base
+  include Memories
   use_database VERSIONING_DB
   
   property :name
