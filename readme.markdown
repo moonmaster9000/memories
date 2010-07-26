@@ -9,7 +9,7 @@ stored as an attachment on the document. This versioning strategy was originally
 
 ##How does it work?
 
-Just "include Memories" in your "CouchRest::Model::Base" documents and let the auto-versioning begin.
+Just "include Memories" in your "CouchRest::Model::Base" classes and let the auto-versioning begin.
 
     class Book < CouchRest::Model::Base
       include Memories
