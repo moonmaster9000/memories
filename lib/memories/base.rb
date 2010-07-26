@@ -7,22 +7,6 @@ module CouchRest
         before_update :add_version_attachment
         after_update :decode_attachments
 
-        def add_version_attachment
-          current_version = Attachment.new prep_for_versioning(self.database.get(self.id, :rev => self.rev)).to_json
-          
-          self.create_attachment( 
-            :file => current_version, 
-            :content_type => "application/json", 
-            :name => "rev-#{self.rev}"
-          )
-        end
-
-        def decode_attachments
-          self["_attachments"].each do |attachment_id, attachment_properties|
-            attachment_properties["data"] = Base64.decode64 attachment_properties["data"] if attachment_properties["data"] 
-          end
-        end
-
         def revert_to!(version=nil)
           version ||= previous_version
           if (match = version.to_s.match(VERSION_REGEX)) && match[1]
@@ -51,8 +35,24 @@ module CouchRest
         end
 
         private
+        def add_version_attachment
+          current_version = Attachment.new prep_for_versioning(self.database.get(self.id, :rev => self.rev)).to_json
+          
+          self.create_attachment( 
+            :file => current_version, 
+            :content_type => "application/json", 
+            :name => "rev-#{self.rev}"
+          )
+        end
+
         def prep_for_versioning(doc)
           doc.dup.delete_if {|k,v| ["couchrest-type", "_id", "_rev", "_attachments"].include? k}
+        end
+
+        def decode_attachments
+          self["_attachments"].each do |attachment_id, attachment_properties|
+            attachment_properties["data"] = Base64.decode64 attachment_properties["data"] if attachment_properties["data"] 
+          end
         end
       end
     end
