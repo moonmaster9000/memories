@@ -1,4 +1,5 @@
 require 'base64'
 require 'couchrest_model'
-require 'memories/attachment.rb'
-require 'memories/base.rb'
+require 'memories/annotation'
+require 'memories/attachment'
+require 'memories/base'

@@ -3,7 +3,7 @@ $LOAD_PATH.unshift './lib'
 require 'memories'
 
 
-COUCHDB_SERVER = CouchRest.new "http://localhost:5984"
+COUCHDB_SERVER = CouchRest.new "http://admin:password@localhost:5984"
 VERSIONING_DB = COUCHDB_SERVER.database!('memories_test')
 
 class Book < CouchRest::Model::Base
