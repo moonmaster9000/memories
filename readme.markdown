@@ -11,9 +11,13 @@ stored as an attachment on the document. This versioning strategy was originally
 
 Just "include Memories" in your "CouchRest::Model::Base" classes and let the auto-versioning begin.
 
+###Basic Versioning
+
+Here's how basic versioning works. Every time you save your document, you get a new version. You have the ability to roll back to a previous version.
+
     class Book < CouchRest::Model::Base
       include Memories
-      use_database VERSIONING_DB
+      use_database SOME_DATABASE
       
       property :name
       view_by :name
@@ -29,3 +33,52 @@ Just "include Memories" in your "CouchRest::Model::Base" classes and let the aut
     b.revert_to! 1
     b.name #==> "2001"
     b.current_version #==> 3
+
+###Milestones
+
+As of version 0.2.0, Memories also supports milestones. Milestones are special versions that you want to flag in some way.
+For example, suppose you were creating a content management system, and every time someone publishes an article to the website, you want to flag the version
+they published as a milestone. 
+
+    class Article < CouchRest::Model::Base
+      include Memories
+      use_database SOME_DATABASE
+      
+      property :title
+      property :author
+      property :body
+
+      def publish!
+        # .... publishing logic
+      end
+    end
+
+    a = Article.create(
+      :title => "Memories gem makes versioning simple", 
+      :author => "moonmaster9000", 
+      :body => <<-ARTICLE
+        Check it out at http://github.com/moonmaster9000/memories
+      ARTICLE
+    )
+    a.save
+    a.publish!
+    a.current_version #==> 1 
+    a.milestone! do
+      name "First publish."
+      notes "Passed all relevant editing. Signed off by moonmaster10000"
+    end
+
+Notice that we annotated our milestone; we gave it a name, and some notes. You can annotate with whatever properties you desire. The annotation do block is entirely optional.
+Now that we've created a milestone, let's inspect it: 
+
+    a.milestones.count #==> 1
+    a.latest_milestone.version # ==> 1
+    a.latest_milestone.annotations.name ==> "First publish."
+    a.latest_milestone.annotations.notes ==> "Passed all relevant editing. Signed off by moonmaster 10000"
+
+Now, let's imagine that we've made some more edits / saves to the document, but they don't get approved. Now we want to revert to the version the document was
+at at the first milestone. How do we do that? Simple!
+
+    a.revert_to_milestone! 1
+
+And now our document properties are back to the where they were when we first published the document.
