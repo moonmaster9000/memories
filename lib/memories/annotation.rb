@@ -1,5 +1,5 @@
 module Memories
-  class Annotation < Hash
+  class Annotation < Hash #:nodoc:
     def method_missing(method_name, *args, &block)
       if args.empty?
         self[method_name]

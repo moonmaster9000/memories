@@ -1,5 +1,5 @@
 module Memories
-  class Attachment
+  class Attachment #:nodoc:
     def initialize(string)
       @string = string
     end
