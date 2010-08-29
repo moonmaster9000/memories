@@ -9,7 +9,7 @@ begin
     gemspec.description = "CouchDB has built in document versioning, but you can't rely on it for version control. " +
                           "This is an implementation of a version-as-attachments approach created by @jchris." + 
     gemspec.email       = "moonmaster9000@gmail.com"
-    gemspec.files       = FileList['lib/**/*.rb', 'README.markdown']
+    gemspec.files       = FileList['lib/**/*.rb', 'README.rdoc']
     gemspec.homepage    = "http://github.com/moonmaster9000/memories"
     gemspec.authors     = ["Matt Parker"]
     gemspec.add_dependency('couchrest_model', '>= 1.0.0.beta7')
