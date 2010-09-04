@@ -34,6 +34,33 @@ Here's how basic versioning works. Every time you save your document, you get a 
     b.name #==> "2001"
     b.current_version #==> 3
 
+If you'd like to exclude certain properties from versioning, use the #forget class method:
+
+    class Book < CouchRest::Model::Base
+      include Memories
+      use_database SOME_DATABASE
+
+      forget :notes
+      
+      property :name
+      property :notes
+      view_by :name
+    end
+
+    b = Book.create :name => "2001", :notes => "creating the book."
+    b.current_version #==> 1
+    b.name = "2001: A Space Odyssey"
+    b.notes += "updating the title. might ship today. 9/2/2010. MKP"
+    b.save
+    b.current_version #==> 2
+    b.previous_version #==> 1
+    p b.name #==> "2001: A Space Odyssey"
+    p b.notes # ==> "creating the book. updating the title. might ship today. 9/2/2010. MKP"
+    b.revert_to! 1
+    p b.name #==> "2001"
+    p b.notes # ==> "creating the book. updating the title. might ship today. 9/2/2010. MKP"
+    b.current_version #==> 3
+
 === Milestones
 
 As of version 0.2.0, Memories also supports milestones. Milestones are special versions that you want to flag in some way.

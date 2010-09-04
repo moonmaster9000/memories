@@ -8,6 +8,32 @@ module Memories
 
     base.before_update :add_version_attachment
     base.after_update :decode_attachments
+    base.send :extend, ClassMethods
+  end
+  
+  module ClassMethods
+    # If you'd like to exclude certain properties from versioning, simply pass those properties
+    # to this method: 
+    #   
+    #   class MyDocument < CouchRest::Model::Base
+    #     use_database MY_DATABASE
+    #     forget :prop1, :prop2
+    #
+    #     property :prop1 #not versioned
+    #     property :prop2 #not versioned
+    #     property :prop3 #versioned
+    #   end
+    def forget(*props)
+      self.forget_properties += props.map {|p| p.to_s}
+    end
+
+    def forget_properties #:nodoc:
+      @forget_properties ||= ["couchrest-type", "_id", "_rev", "_attachments", "milestone_memories"]
+    end
+
+    def forget_properties=(props) #:nodoc:
+      @forget_properties = props
+    end
   end
   
   VERSION_REGEX = /(?:rev-)?(\d+)-[a-zA-Z0-9]+/
@@ -148,7 +174,7 @@ module Memories
   end
 
   def prep_for_versioning(doc)
-    doc.dup.delete_if {|k,v| ["couchrest-type", "_id", "_rev", "_attachments", "milestone_memories"].include? k}
+    doc.dup.delete_if {|k,v| self.class.forget_properties.include? k}
   end
 
   def decode_attachments
