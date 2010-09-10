@@ -17,6 +17,8 @@ module Memories
     #   
     #   class MyDocument < CouchRest::Model::Base
     #     use_database MY_DATABASE
+    #     include Memories
+    #
     #     forget :prop1, :prop2
     #
     #     property :prop1 #not versioned

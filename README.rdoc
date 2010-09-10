@@ -7,6 +7,10 @@ stored as an attachment on the document. This versioning strategy was originally
 
     $ gem install memories
 
+== Documentation
+
+Browse the documentation on rdoc.info: http://rdoc.info/github/moonmaster9000/memories
+
 == How does it work?
 
 Just "include Memories" in your "CouchRest::Model::Base" classes and let the auto-versioning begin.
