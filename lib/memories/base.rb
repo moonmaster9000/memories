@@ -26,7 +26,42 @@ module Memories
     #     property :prop3 #versioned
     #   end
     def forget(*props)
+      raise StandardError, "Ambiguous use of both #remember and #forget." if @remember_called
+      @forget_called = true
       self.forget_properties += props.map {|p| p.to_s}
+    end
+
+
+    # If you'd like to explicitly define which properties you want versioned simply pass those properties
+    # to this method: 
+    #   
+    #   class MyDocument < CouchRest::Model::Base
+    #     use_database MY_DATABASE
+    #     include Memories
+    #
+    #     remember :prop1, :prop2
+    #
+    #     property :prop1 #versioned
+    #     property :prop2 #versioned
+    #     property :prop3 # not versioned
+    #   end
+    def remember(*props)
+      raise StandardError, "Ambiguous use of both #remember and #forget." if @forget_called
+      @remember_called = true
+      props = props.map {|p| p.to_s}
+      if self.remember_properties.nil?
+        self.remember_properties = props 
+      else
+        self.remember_properties += props 
+      end
+    end 
+
+    def remember_properties #:nodoc
+      @remember_properties ||= nil
+    end
+
+    def remember_properties=(props) #:nodoc
+      @remember_properties = props
     end
 
     def forget_properties #:nodoc:
@@ -176,7 +211,11 @@ module Memories
   end
 
   def prep_for_versioning(doc)
-    doc.dup.delete_if {|k,v| self.class.forget_properties.include? k}
+    if self.class.remember_properties.nil?
+      doc.dup.delete_if {|k,v| self.class.forget_properties.include? k}
+    else
+      doc.dup.delete_if {|k,v| !self.class.remember_properties.include?(k)}
+    end
   end
 
   def decode_attachments
