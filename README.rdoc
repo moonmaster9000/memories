@@ -65,6 +65,8 @@ If you'd like to exclude certain properties from versioning, use the #forget cla
     p b.notes # ==> "creating the book. updating the title. might ship today. 9/2/2010. MKP"
     b.current_version #==> 3
 
+If you'd like to explicitly define which properties to version, use the #remember method. It works just like #forget, but in reverse. Duh.
+
 === Milestones
 
 As of version 0.2.0, Memories also supports milestones. Milestones are special versions that you want to flag in some way.
