@@ -1,9 +1,9 @@
 module Memories
   class Attachment #:nodoc:
-    def initialize(string)
-      @string = string
+    def initialize(data)
+      @data = data
     end
 
-    def read; @string; end
+    def read; @data; end
   end
 end

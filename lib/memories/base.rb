@@ -7,6 +7,7 @@ module Memories
     end
 
     base.before_update :add_version_attachment
+    base.after_create :decode_attachments
     base.after_update :decode_attachments
     base.send :extend, ClassMethods
   end
@@ -56,6 +57,46 @@ module Memories
       end
     end 
 
+    # Returns true if self is set up to remember attachments. False otherwise.
+    def remember_attachments?
+      @remember_attachments ? true : false
+    end
+
+    # Returns a list of attachment patterns for versioning. The list may contain
+    # strings, denoting the names of attachments to version, but it may 
+    # also contain regular expressions, indicating that attachments
+    # with matching names should be versioned.
+    def remember_attachments; @remember_attachments || []; end
+
+    # If you'd like to version attachments, simply call this macro in your 
+    # class definition: 
+    #
+    #   class MyDoc < CouchRest::Model::Base
+    #     use_database MY_DB
+    #     include Memories
+    # 
+    #     remember_attachments!
+    #   end
+    #
+    # If you only want specific attachments versioned, pass 
+    # strings and/or regular expressions to this macro. Any attachments
+    # with matching names will be versioned.
+    #
+    #   class HtmlPage < CouchRest::Model::Base
+    #     use_database MY_DB
+    #     include Memories
+    # 
+    #     remember_attachments! "image.png", %r{stylesheets/.*}
+    #   end
+    #
+    def remember_attachments!(*attachment_names)
+      if attachment_names.empty?
+        @remember_attachments = [/.*/]
+      else 
+        @remember_attachments = attachment_names
+      end
+    end
+
     def remember_properties #:nodoc
       @remember_properties ||= nil
     end
@@ -74,6 +115,17 @@ module Memories
   end
   
   VERSION_REGEX = /(?:rev-)?(\d+)-[a-zA-Z0-9]+/
+  
+  # Returns a list of attachments it should remember.
+  def attachments_to_remember
+    return [] unless self.class.remember_attachments?
+    (self['_attachments'] || {}).keys.reject do |a| 
+      a.match(VERSION_REGEX) || 
+        !(self.class.remember_attachments.map { |attachment_name_pattern|
+          a.match attachment_name_pattern
+        }.inject(false) {|b, sum| sum || b})
+    end 
+  end
   
   # Revert the document to a specific version and save. 
   # You can provide either a complete revision number ("1-u54abz3948302sjjej3jej300rj", or "rev-1-u54abz3948302sjjej3jej300rj")
@@ -128,7 +180,7 @@ module Memories
   # For example, suppose my doc has 5 versions. 
   #   my_doc.version_id 4 #==> "rev-4-74fj838r838fhjkdfklasdjrieu4839493"
   def version_id(version_num)
-    self["_attachments"].keys.sort {|a,b| version_number(a) <=> version_number(b)}[version_num - 1] if self["_attachments"]
+    self["_attachments"].keys.select {|a| a.match /^rev-#{version_num}-.*$/}.first if self["_attachments"]
   end
 
   # Retrieve the version number, given a revision id. 
@@ -191,18 +243,29 @@ module Memories
       version = match[1].to_i  
     end
     
-    if properties = JSON.parse(read_attachment(version_id version))
-      if revert_type == :soft
-        self.update_attributes_without_saving properties
-      elsif revert_type == :hard
-        self.update_attributes properties
+    if properties = JSON.parse(self.read_attachment(version_id version))
+      revert_attachments properties
+      self.update_attributes_without_saving properties
+      self.save if revert_type == :hard
+    end
+  end
+
+  def revert_attachments(properties)
+    if versioned_attachments = properties.delete('attachment_memories')
+      versioned_attachments['versioned_attachments'].each do |name, attrs|
+        attachment = { :name => name, :content_type => attrs['content_type'], :file => Attachment.new(Base64.decode64(attrs['data']))}
+        has_attachment?(name) ? self.update_attachment(attachment) : self.create_attachment(attachment)
+      end
+
+      self["_attachments"].keys.select {|a| !a.match(VERSION_REGEX)}.each do |attachment|
+        self.delete_attachment(attachment) unless versioned_attachments['known_attachments'].include?(attachment)
       end
     end
   end
 
   def add_version_attachment
     current_document_version = Attachment.new prep_for_versioning(self.database.get(self.id, :rev => self.rev)).to_json
-    
+   
     self.create_attachment( 
       :file => current_document_version, 
       :content_type => "application/json", 
@@ -211,16 +274,45 @@ module Memories
   end
 
   def prep_for_versioning(doc)
-    if self.class.remember_properties.nil?
-      doc.dup.delete_if {|k,v| self.class.forget_properties.include? k}
-    else
-      doc.dup.delete_if {|k,v| !self.class.remember_properties.include?(k)}
-    end
+    versioned_doc = doc.dup
+    strip_unversioned_properties versioned_doc
+    add_attachment_memories versioned_doc if self.class.remember_attachments?
+    versioned_doc
+  end
+  
+  def add_attachment_memories(doc)
+    doc['attachment_memories'] = {
+      'versioned_attachments' => base64_encoded_attachments_to_remember,
+      'known_attachments' => (self.database.get(self.id, :rev => self.rev)["_attachments"] || {}).keys.select {|a| !a.match(VERSION_REGEX)}
+    }
   end
 
+  def base64_encoded_attachments_to_remember
+    encoded_attachments = {}
+    attachments_to_remember.each do |a|
+      attachment_data = self.read_attachment(a) rescue nil
+      if attachment_data
+        encoded_attachments[a] = { 
+          :content_type => self['_attachments'][a]['content_type'],
+          :data => Base64.encode64(attachment_data)
+        }
+      end
+    end
+    encoded_attachments
+  end
+
+  def strip_unversioned_properties(doc)
+    if self.class.remember_properties.nil?
+      doc.delete_if {|k,v| self.class.forget_properties.include? k}
+    else
+      doc.delete_if {|k,v| !self.class.remember_properties.include?(k)}
+    end   
+  end
+
+  # why is this necessary? Because couchrest destructively base64 encodes all attachments in your document. 
   def decode_attachments
     self["_attachments"].each do |attachment_id, attachment_properties|
-      attachment_properties["data"] = Base64.decode64 attachment_properties["data"] if attachment_properties["data"] 
-    end
+      self["_attachments"][attachment_id]["data"] = Base64.decode64 attachment_properties["data"] if attachment_properties["data"] 
+    end if self["_attachments"]
   end
 end

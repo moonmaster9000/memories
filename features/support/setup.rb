@@ -14,7 +14,7 @@ class Book < CouchRest::Model::Base
   view_by :name
 end
 
-After do |scenario|
+Before do |scenario|
   VERSIONING_DB.delete!
   VERSIONING_DB.create!
 end
