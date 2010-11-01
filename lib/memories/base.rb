@@ -294,7 +294,7 @@ module Memories
       if attachment_data
         encoded_attachments[a] = { 
           :content_type => self['_attachments'][a]['content_type'],
-          :data => Base64.encode64(attachment_data)
+          :data => Base64.encode64(attachment_data).gsub(/\s/, '')
         }
       end
     end
