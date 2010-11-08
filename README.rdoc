@@ -115,3 +115,26 @@ at at the first milestone. How do we do that? Simple!
     a.revert_to_milestone! 1
 
 And now our document properties are back to the where they were when we first published the document.
+
+== Attachments
+
+By default, memories doesn't version attachments. If you'd like to version attachments, simply call the `remember\_attachments!` class method in your 
+class definition: 
+
+    class MyDoc < CouchRest::Model::Base
+      use_database MY_DB
+      include Memories
+
+      remember_attachments!
+    end
+
+If you only want specific attachments versioned, pass 
+strings and/or regular expressions to this macro. Any attachments
+with matching names will be versioned.
+
+    class HtmlPage < CouchRest::Model::Base
+      use_database MY_DB
+      include Memories
+
+      remember_attachments! "image.png", %r{stylesheets/.*}
+    end
