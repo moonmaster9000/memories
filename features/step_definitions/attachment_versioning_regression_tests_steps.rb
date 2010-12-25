@@ -1,5 +1,8 @@
 Given /^a document with no attachments$/ do
-  @doc = Book.create :name => "test"
+  class BookWithAttachments < Book
+    remember_attachments!
+  end
+  @doc = BookWithAttachments.create :name => "test"
 end
 
 When /^I add an attachment "([^"]*)"$/ do |attachment_name|
