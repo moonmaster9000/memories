@@ -143,11 +143,13 @@ module Memories
   #   my_doc.revert_to! 3 # ==> would revert your document "my_doc" to version 3. 
   def revert_to!(version)
     revert version, :hard
+    self
   end
 
   # Same as #revert_to!, except that it doesn't save.
   def revert_to(version)
     revert version
+    self
   end
 
   # Same as #rollback!, but doesn't save.

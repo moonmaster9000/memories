@@ -2,6 +2,7 @@ module Memories
   class VersionsProxy
     def initialize(doc)
       @doc = doc
+      @versions = {}
     end
 
     def count
@@ -22,15 +23,14 @@ module Memories
       return [] if range.first > @doc.current_version
       current_version = range.last >= @doc.current_version ? @doc.dup : nil
       last = range.last >= @doc.current_version ? @doc.current_version - 1 : range.last
-      versions = (range.first..last).to_a.map {|i| @doc.revert_to(i); @doc.dup}
+      versions = (range.first..last).to_a.map {|i| version_num i}
       versions << current_version if current_version 
       versions
     end
 
     def version_num(num)
-      return nil if !num.kind_of?(Fixnum) or num > @doc.current_version or num < 1
-      @doc.revert_to(num)
-      @doc.dup
+      return nil if !num.kind_of?(Fixnum) or num >= @doc.current_version or num < 1
+      @versions[num] ||= @doc.revert_to(num).dup
     end
 
     def version_id(id)
