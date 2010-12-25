@@ -125,6 +125,17 @@ module Memories
         }.inject(false) {|b, sum| sum || b})
     end 
   end
+
+  # Returns a list of attachments it should not version
+  def attachments_to_forget
+    return [] unless self.class.remember_attachments?
+    (self.database.get(self.id)["_attachments"] || {}).keys.reject do |a| 
+      a.match(VERSION_REGEX) || 
+        (self.class.remember_attachments.map { |attachment_name_pattern|
+          a.match attachment_name_pattern
+        }.inject(false) {|b, sum| sum || b})
+    end 
+  end
   
   # Revert the document to a specific version and save. 
   # You can provide either a complete revision number ("1-u54abz3948302sjjej3jej300rj", or "rev-1-u54abz3948302sjjej3jej300rj")
@@ -261,7 +272,7 @@ module Memories
       end
 
       self["_attachments"].keys.select {|a| !a.match(VERSION_REGEX)}.each do |attachment|
-        self.delete_attachment(attachment) unless versioned_attachments['known_attachments'].include?(attachment)
+        self.delete_attachment(attachment) if !versioned_attachments['known_attachments'].include?(attachment) and !attachments_to_forget.include?(attachment)
       end
     end
   end
