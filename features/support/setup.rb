@@ -14,6 +14,7 @@ class MainDoc < CouchRest::Model::Base
 end
 
 class Book < MainDoc
+  remember_attachments!
 end
 
 Before do |scenario|
