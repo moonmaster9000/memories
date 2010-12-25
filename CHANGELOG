@@ -1,0 +1,3 @@
+v0.2.7
+  -- fixes a bug where unversionable attachments would get deleted on revert when you versioned only specific attachments
+  -- the versions proxy now caches versions for faster retrieval on multiple accesses
