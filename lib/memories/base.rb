@@ -203,6 +203,10 @@ module Memories
     version_number rev
   end
 
+  def versions
+    @versions ||= VersionsProxy.new self
+  end
+
   # Flag the current version as a milestone. You can optionally annotate the milestone by passing a do block to the method.
   #   some_article.milestone! do
   #     notes "Passed first round of editing."

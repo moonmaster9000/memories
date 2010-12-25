@@ -1,5 +1,6 @@
 require 'base64'
 require 'couchrest_model'
 require 'memories/annotation'
+require 'memories/versions_proxy'
 require 'memories/attachment'
 require 'memories/base'
