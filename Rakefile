@@ -11,7 +11,7 @@ begin
     gemspec.email       = "moonmaster9000@gmail.com"
     gemspec.files       = FileList['lib/**/*.rb', 'README.rdoc']
     gemspec.homepage    = "http://github.com/moonmaster9000/memories"
-    gemspec.authors     = ["Matt Parker"]
+    gemspec.authors     = ["Matt Parker", "Gary Cheong"]
     gemspec.add_dependency('couchrest_model', '>= 1.0.0.beta7')
   end
   Jeweler::GemcutterTasks.new
