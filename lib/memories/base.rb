@@ -7,8 +7,7 @@ module Memories
     end
 
     base.before_update :add_version_attachment
-    base.after_create :decode_attachments
-    base.after_update :decode_attachments
+    base.after_save :decode_attachments
     base.send :extend, ClassMethods
   end
   
