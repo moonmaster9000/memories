@@ -94,11 +94,11 @@ Given /^the first version of the document has no attachments$/ do
 end
 
 Given /^the next version of the document has "([^"]*)" attachments?$/ do |num_attachments|
-  0.upto(num_attachments.to_i) do |i|
+  1.upto(num_attachments.to_i) do |i|
     props = {:name => "attachment_#{i}", :content_type => "text/plain", :file => ::Memories::Attachment.new("this is attachment #{i}")}
     @doc.has_attachment?(props[:name]) ? @doc.update_attachment(props) : @doc.create_attachment(props)
-    @doc.save
   end
+  @doc.save
 end
 
 When /^I revert the document to the first version$/ do

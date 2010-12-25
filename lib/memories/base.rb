@@ -119,7 +119,7 @@ module Memories
   # Returns a list of attachments it should remember.
   def attachments_to_remember
     return [] unless self.class.remember_attachments?
-    (self['_attachments'] || {}).keys.reject do |a| 
+    (self.database.get(self.id)["_attachments"] || {}).keys.reject do |a| 
       a.match(VERSION_REGEX) || 
         !(self.class.remember_attachments.map { |attachment_name_pattern|
           a.match attachment_name_pattern
@@ -219,7 +219,7 @@ module Memories
   end
 
   # returns an array of all milestones. Each milestone contains a "version" property (pointing to a specific revision)
-  # and an "annotations" property, containing a (possible empty) hash of key/value pairs corresponding to any annotations
+  # and an "annotations" property, containing a (possibly empty) hash of key/value pairs corresponding to any annotations
   # the creator of the milestone decided to write.
   def milestones
     self.milestone_memories
@@ -238,7 +238,7 @@ module Memories
 
   def revert(version, revert_type = :soft)
     raise StandardError, "Unknown revert type passed to 'revert' method. Allowed types: :soft, :hard." if revert_type != :soft && revert_type != :hard
-
+    
     if (match = version.to_s.match(VERSION_REGEX)) && match[1]
       version = match[1].to_i  
     end
@@ -264,7 +264,7 @@ module Memories
   end
 
   def add_version_attachment
-    current_document_version = Attachment.new prep_for_versioning(self.database.get(self.id, :rev => self.rev)).to_json
+    current_document_version = Attachment.new prep_for_versioning(self.database.get(self.id)).to_json
    
     self.create_attachment( 
       :file => current_document_version, 
@@ -275,25 +275,25 @@ module Memories
 
   def prep_for_versioning(doc)
     versioned_doc = doc.dup
-    strip_unversioned_properties versioned_doc
     add_attachment_memories versioned_doc if self.class.remember_attachments?
+    strip_unversioned_properties versioned_doc
     versioned_doc
   end
   
   def add_attachment_memories(doc)
     doc['attachment_memories'] = {
-      'versioned_attachments' => base64_encoded_attachments_to_remember,
+      'versioned_attachments' => base64_encoded_attachments_to_remember(doc),
       'known_attachments' => (self.database.get(self.id, :rev => self.rev)["_attachments"] || {}).keys.select {|a| !a.match(VERSION_REGEX)}
     }
   end
 
-  def base64_encoded_attachments_to_remember
+  def base64_encoded_attachments_to_remember(doc)
     encoded_attachments = {}
     attachments_to_remember.each do |a|
       attachment_data = self.read_attachment(a) rescue nil
       if attachment_data
         encoded_attachments[a] = { 
-          :content_type => self['_attachments'][a]['content_type'],
+          :content_type => doc['_attachments'][a]['content_type'],
           :data => Base64.encode64(attachment_data).gsub(/\s/, '')
         }
       end
