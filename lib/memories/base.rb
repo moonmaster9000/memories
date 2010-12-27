@@ -11,7 +11,7 @@ module Memories
     base.send :extend, ClassMethods
   end
   
-  module ClassMethods
+  module ClassMethods #:nodoc:
     # If you'd like to exclude certain properties from versioning, simply pass those properties
     # to this method: 
     #   
@@ -25,7 +25,7 @@ module Memories
     #     property :prop2 #not versioned
     #     property :prop3 #versioned
     #   end
-    def forget(*props)
+    def forget(*props) #:doc:
       raise StandardError, "Ambiguous use of both #remember and #forget." if @remember_called
       @forget_called = true
       self.forget_properties += props.map {|p| p.to_s}
@@ -45,7 +45,7 @@ module Memories
     #     property :prop2 #versioned
     #     property :prop3 # not versioned
     #   end
-    def remember(*props)
+    def remember(*props) #:doc:
       raise StandardError, "Ambiguous use of both #remember and #forget." if @forget_called
       @remember_called = true
       props = props.map {|p| p.to_s}
@@ -57,7 +57,7 @@ module Memories
     end 
 
     # Returns true if self is set up to remember attachments. False otherwise.
-    def remember_attachments?
+    def remember_attachments? #:doc:
       @remember_attachments ? true : false
     end
 
@@ -88,7 +88,7 @@ module Memories
     #     remember_attachments! "image.png", %r{stylesheets/.*}
     #   end
     #
-    def remember_attachments!(*attachment_names)
+    def remember_attachments!(*attachment_names) #:doc:
       if attachment_names.empty?
         @remember_attachments = [/.*/]
       else 
@@ -96,24 +96,24 @@ module Memories
       end
     end
 
-    def remember_properties #:nodoc
+    def remember_properties
       @remember_properties ||= nil
     end
 
-    def remember_properties=(props) #:nodoc
+    def remember_properties=(props)
       @remember_properties = props
     end
 
-    def forget_properties #:nodoc:
+    def forget_properties
       @forget_properties ||= ["couchrest-type", "_id", "_rev", "_attachments", "milestone_memories"]
     end
 
-    def forget_properties=(props) #:nodoc:
+    def forget_properties=(props)
       @forget_properties = props
     end
   end
-  
-  VERSION_REGEX = /(?:rev-)?(\d+)-[a-zA-Z0-9]+/
+   
+  VERSION_REGEX = /(?:rev-)?(\d+)-[a-zA-Z0-9]+/ #:nodoc:
   
   # Returns a list of attachments it should remember.
   def attachments_to_remember
