@@ -72,3 +72,32 @@ end
 When /^I call the \[\] method on the proxy with an string that does not correspond to a valid version$/ do
   @version = @versions['jkfldsajklfdsa']
 end
+
+When /^I call the \#last method on the proxy$/ do
+  @last = @versions.last
+end
+
+Then /^I should get the latest version of the document$/ do
+  @doc.name.should == @last.name
+end
+
+When /^I update the document$/ do
+  @doc.name = 'update!'
+  @doc.save
+end
+
+When /^I call the \#first method on the proxy$/ do
+  @first = @versions.first
+end
+
+Then /^I should get the first version of the document$/ do
+  @first.name.should == "version 1"
+end
+
+When /^I call the \[\] method on the proxy with a range that includes the latest version$/ do
+  @version_range = @versions[1..@doc.current_version]
+end
+
+Then /^I should recieve an array where the last element is the latest version$/ do
+  @version_range.last.name.should == @doc.name
+end

@@ -33,3 +33,24 @@ Feature: Easily accessing previous versions
     Then I should get back that version of the document
     When I call the [] method on the proxy with an string that does not correspond to a valid version
     Then I should get back nil
+
+  Scenario: The "versions" array proxy should return the latest version of the document when requested
+    Given a "versions" array proxy for a document
+    When I call the #last method on the proxy
+    Then I should get the latest version of the document
+    When I update the document
+    And I call the #last method on the proxy
+    Then I should get the latest version of the document
+
+  Scenario: The "versions" array proxy should return the first version of the document when requested
+    Given a "versions" array proxy for a document
+    When I call the #first method on the proxy
+    Then I should get the first version of the document
+
+  Scenario: The "versions" array proxy should return the latest version of the document when requested in a range
+    Given a "versions" array proxy for a document
+    When I call the [] method on the proxy with a range that includes the latest version
+    Then I should recieve an array where the last element is the latest version
+    When I update the document
+    And I call the [] method on the proxy with a range that includes the latest version
+    Then I should recieve an array where the last element is the latest version

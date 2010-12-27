@@ -9,6 +9,14 @@ module Memories
       @doc.current_version
     end
 
+    def first
+      version_num 1
+    end
+
+    def last
+      @doc.dup
+    end
+
     def [](arg)
       case arg.class.to_s
         when "Range" then version_range arg
