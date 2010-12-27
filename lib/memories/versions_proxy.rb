@@ -11,7 +11,7 @@ module Memories
     
     # Returns the number of versions of your document.
     #   doc = Book.create :name => '2001'
-    #   doc.name => '2001: A Space Odyssey'
+    #   doc.name = '2001: A Space Odyssey'
     #   doc.save
     #   doc.versions.count # ==> 2
     def count
