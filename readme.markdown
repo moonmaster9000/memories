@@ -145,5 +145,7 @@ You can access old versions of your document via the "versions" method; it will 
 
   @doc.versions[1] # ==> returns version 1 of your document
   @doc.versions['rev-1-kjfdsla3289430289432'] # ==> returns version 1 of your document
-  @doc.versions[1..20] # ==> returns versions 1 through 20 of your document
+  @doc.versions[5..20] # ==> returns versions 5 through 20 of your document
   @doc.versions.count # ==> returns the number of versions of your document
+  @doc.versions.last # ==> returns the latest version of your document
+  @doc.versions.first # ==> returns the first version of your document

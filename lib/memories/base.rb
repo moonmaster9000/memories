@@ -216,6 +216,13 @@ module Memories
     version_number rev
   end
 
+  # Provides array-like and hash-like access to the versions of your document.
+  #   @doc.versions[1] # ==> returns version 1 of your document
+  #   @doc.versions['rev-1-kjfdsla3289430289432'] # ==> returns version 1 of your document
+  #   @doc.versions[5..20] # ==> returns versions 5 through 20 of your document
+  #   @doc.versions.count # ==> returns the number of versions of your document
+  #   @doc.versions.last # ==> returns the latest version of your document
+  #   @doc.versions.first # ==> returns the first version of your document
   def versions
     @versions ||= VersionsProxy.new self
   end

@@ -1,22 +1,48 @@
 module Memories
-  class VersionsProxy #:nodoc
+  class VersionsProxy
+    # A Memories::VersionsProxy is automatically initialized, memoized, 
+    # and returned when you call the `versions` method on your document.
+    #   doc = Book.create :name => '2001'
+    #   doc.versions.class # ==> ::Memories::VersionsProxy
     def initialize(doc)
       @doc = doc
       @versions = {}
     end
-
+    
+    # Returns the number of versions of your document.
+    #   doc = Book.create :name => '2001'
+    #   doc.name => '2001: A Space Odyssey'
+    #   doc.save
+    #   doc.versions.count # ==> 2
     def count
       @doc.current_version
     end
 
+    # Returns the first version of your document
+    #   doc = Book.create :name => '2001'
+    #   doc.name => '2001: A Space Odyssey'
+    #   doc.save
+    #   doc.versions.first.name # ==> '2001'
     def first
-      version_num 1
+      @doc.current_version == 1 ? @doc.dup : version_num(1)
     end
 
+    # Returns the last version of your document (which should be the same as your document)    
+    #   doc = Book.create :name => '2001'
+    #   doc.name => '2001: A Space Odyssey'
+    #   doc.save
+    #   doc.versions.last.name # ==> '2001: A Space Odyssey'
     def last
       @doc.dup
     end
 
+    # Provides array-like and hash-like access to the versions of your document.
+    #   @doc.versions[1] # ==> returns version 1 of your document
+    #   @doc.versions['rev-1-kjfdsla3289430289432'] # ==> returns version 1 of your document
+    #   @doc.versions[5..20] # ==> returns versions 5 through 20 of your document
+    #   @doc.versions.count # ==> returns the number of versions of your document
+    #   @doc.versions.last # ==> returns the latest version of your document
+    #   @doc.versions.first # ==> returns the first version of your document
     def [](arg)
       case arg.class.to_s
         when "Range" then version_range arg
