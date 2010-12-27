@@ -1,5 +1,18 @@
 Feature: Revert to previous versions
+  
+  @focus
+  Scenario: Reverting to the current version should return the same object
+    Given a document
+    When I revert the document to the current version
+    Then nothing should happen
+    And the method should simply return the object
 
+  @focus
+  Scenario: Reverting the document to a version that doesn't exist should raise an exception
+    Given a document
+    When I revert the document to a version that doesn't exist
+    Then an exception should be raised
+  
   Scenario Outline: Revert to any previous version
     Given I have 5 versions of a document
     When I revert the document to version <num>

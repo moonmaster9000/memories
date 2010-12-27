@@ -261,6 +261,7 @@ module Memories
 
   def revert(version, revert_type = :soft)
     raise StandardError, "Unknown revert type passed to 'revert' method. Allowed types: :soft, :hard." if revert_type != :soft && revert_type != :hard
+    raise StandardError, "The requested version does not exist" if version < 1 or version > current_version
     return self if version == current_version
     
     if (match = version.to_s.match(VERSION_REGEX)) && match[1]
