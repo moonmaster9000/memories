@@ -11,7 +11,7 @@ module Memories
     base.send :extend, ClassMethods
   end
   
-  module ClassMethods #:nodoc:
+  module ClassMethods #:nodoc: all
     # If you'd like to exclude certain properties from versioning, simply pass those properties
     # to this method: 
     #   
