@@ -63,9 +63,10 @@ module Memories
     end
 
     def sanitize_range(range)
+      raise StandardError, "Sorry, but we don't allow negative numbers in the range." if range.first < 0 or range.last < 0
       return [] if range.first > @doc.current_version
-      first = range.first < 1 ? 1 : range.first
-      last = range.last > @doc.current_version ? @doc.current_version : range.last
+      first = [1, range.first].max
+      last  = [range.last, @doc.current_version].min
       (first..last)
     end
 
