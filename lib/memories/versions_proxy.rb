@@ -20,7 +20,7 @@ module Memories
 
     # Returns the first version of your document
     #   doc = Book.create :name => '2001'
-    #   doc.name => '2001: A Space Odyssey'
+    #   doc.name = '2001: A Space Odyssey'
     #   doc.save
     #   doc.versions.first.name # ==> '2001'
     def first
@@ -29,7 +29,7 @@ module Memories
 
     # Returns the last version of your document (which should be the same as your document)    
     #   doc = Book.create :name => '2001'
-    #   doc.name => '2001: A Space Odyssey'
+    #   doc.name = '2001: A Space Odyssey'
     #   doc.save
     #   doc.versions.last.name # ==> '2001: A Space Odyssey'
     def last
