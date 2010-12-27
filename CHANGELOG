@@ -1,3 +1,7 @@
+v0.2.9
+  -- revert_to* now returns `self` if the requested version is the current version
+  -- revert_to* raises an exception if the requested version doesn't exist
+
 v0.2.8
   -- added #first and #last methods to Memories::VersionsProxy instance
   -- fixed a bug in the range access on #versions where the last version, the "current_version", could get out of sync.
