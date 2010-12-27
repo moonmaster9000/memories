@@ -1,5 +1,5 @@
 module Memories
-  class VersionsProxy
+  class VersionsProxy #:nodoc
     def initialize(doc)
       @doc = doc
       @versions = {}
@@ -30,7 +30,7 @@ module Memories
 
     def version_num(num)
       return nil if !num.kind_of?(Fixnum) or num >= @doc.current_version or num < 1
-      @versions[num] ||= @doc.revert_to(num).dup
+      @versions[num] ||= @doc.dup.revert_to(num)
     end
 
     def version_id(id)
