@@ -18,8 +18,12 @@ When /^I revert the document to a version that doesn't exist$/ do
   @bad_revert = lambda {@doc.revert_to! 1000}
 end
 
-Then /^an exception should be raised$/ do
-  @bad_revert.should raise_exception(StandardError, "The requested version does not exist")
+Then /^an exception "([^"]*)" should be raised$/ do |exception_message|
+  @bad_revert.should raise_exception(StandardError, exception_message)
+end
+
+When /^I revert the document to a value that can't resolve to a version$/ do
+  @bad_revert = lambda {@doc.revert_to! 'version one'}
 end
 
 Given %r{^I have 5 versions of a document$} do

@@ -11,7 +11,13 @@ Feature: Revert to previous versions
   Scenario: Reverting the document to a version that doesn't exist should raise an exception
     Given a document
     When I revert the document to a version that doesn't exist
-    Then an exception should be raised
+    Then an exception "The requested version does not exist" should be raised
+
+  @focus
+  Scenario: Reverting the document to a value that can't resolve to a version should raise an exception
+    Given a document
+    When I revert the document to a value that can't resolve to a version
+    Then an exception "Unknown version" should be raised
   
   Scenario Outline: Revert to any previous version
     Given I have 5 versions of a document
