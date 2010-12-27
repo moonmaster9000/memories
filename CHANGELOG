@@ -1,6 +1,10 @@
-v0.2.9
+v0.2.10
   -- revert_to* now returns `self` if the requested version is the current version
   -- revert_to* raises an exception if the requested version doesn't exist
+  -- revert_to* raises an exception if the requested version is a value that can't resolve to a version
+
+v0.2.9
+  -- BAD VERSION; DON'T USE. YANKED FROM RUBYGEMS.
 
 v0.2.8
   -- added #first and #last methods to Memories::VersionsProxy instance
