@@ -1,3 +1,7 @@
+v0.2.8
+  -- added #first and #last methods to Memories::VersionsProxy instance
+  -- fixed a bug in the range access on #versions where the last version, the "current_version", could get out of sync.
+
 v0.2.7
   -- fixes a bug where unversionable attachments would get deleted on revert when you versioned only specific attachments
   -- the versions proxy now caches versions for faster retrieval on multiple accesses
