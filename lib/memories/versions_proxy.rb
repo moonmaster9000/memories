@@ -54,17 +54,19 @@ module Memories
 
     private
     def version_range(range)
-      return [] if range.first > @doc.current_version
-      current_version = range.last >= @doc.current_version ? @doc.dup : nil
-      last = range.last >= @doc.current_version ? @doc.current_version - 1 : range.last
-      versions = (range.first..last).to_a.map {|i| version_num i}
-      versions << current_version if current_version 
-      versions
+      sanitize_range(range).to_a.map {|i| version_num i}
     end
 
     def version_num(num)
-      return nil if !num.kind_of?(Fixnum) or num >= @doc.current_version or num < 1
+      return nil if !num.kind_of?(Fixnum) or num > @doc.current_version or num < 1
       @versions[num] ||= @doc.dup.revert_to(num)
+    end
+
+    def sanitize_range(range)
+      return [] if range.first > @doc.current_version
+      first = range.first < 1 ? 1 : range.first
+      last = range.last > @doc.current_version ? @doc.current_version : range.last
+      (first..last)
     end
 
     def version_id(id)
