@@ -1,3 +1,6 @@
+v0.2.12
+  -- added an "each" iterator for the versions proxy; e.g.: @doc.versions.each {|v| puts v.some_property}
+
 v0.2.11
   -- added a "data" property to milestones that returns the version corresponding to that milestone (see the end of the milestones section in the README).
 
