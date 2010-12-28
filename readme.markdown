@@ -117,7 +117,7 @@ at at the first milestone. How do we do that? Simple!
 
 And now our document properties are back to the where they were when we first published the document.
 
-If you want to access the data from a milestone, simply use the "data" method: 
+If you want to access the version instance of a milestone, simply use the "data" method: 
     
     a.milestones.first.data.title #==> returns the "title" attribute on the first milestone
     a.milestones.each do |m|
@@ -158,3 +158,6 @@ You can access old versions of your document via the "versions" method; it will 
   @doc.versions.count # ==> returns the number of versions of your document
   @doc.versions.last # ==> returns the latest version of your document
   @doc.versions.first # ==> returns the first version of your document
+  @doc.versions.each do |v|
+    puts v.some_property
+  end

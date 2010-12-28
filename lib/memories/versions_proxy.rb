@@ -52,6 +52,12 @@ module Memories
       end
     end
 
+    # Iterate through all versions
+    #     @doc.versions.each {|v| puts v.some_property}
+    def each(&block)
+      version_range(1..@doc.current_version).each &block
+    end
+
     private
     def version_range(range)
       sanitize_range(range).to_a.map {|i| version_num i}

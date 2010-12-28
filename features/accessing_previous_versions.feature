@@ -54,3 +54,9 @@ Feature: Easily accessing previous versions
     When I update the document
     And I call the [] method on the proxy with a range that includes the latest version
     Then I should recieve an array where the last element is the latest version
+
+  @focus
+  Scenario: Iterating through all versions
+    Given a "versions" array proxy for a document
+    When I call the #each method with a block
+    Then I should be able to iterate through all versions of the document

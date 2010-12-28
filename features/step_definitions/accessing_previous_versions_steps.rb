@@ -101,3 +101,14 @@ end
 Then /^I should recieve an array where the last element is the latest version$/ do
   @version_range.last.name.should == @doc.name
 end
+
+When /^I call the \#each method with a block$/ do
+  @names = []
+  @versions.each {|v| @names << v.name} 
+end
+
+Then /^I should be able to iterate through all versions of the document$/ do
+  @names.each_with_index do |name, i|
+    name.should == "version #{i+1}"
+  end
+end
