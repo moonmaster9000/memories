@@ -9,7 +9,7 @@ stored as an attachment on the document. This versioning strategy was originally
 
 == Documentation
 
-Browse the documentation on rdoc.info: http://rdoc.info/github/moonmaster9000/memories
+Browse the documentation on rubydoc.info: http://rubydoc.info/gems/memories/frames
 
 == How does it work?
 
