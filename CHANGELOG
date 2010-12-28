@@ -1,3 +1,6 @@
+v0.2.11
+  -- added a "data" property to milestones that returns the version corresponding to that milestone (see the end of the milestones section in the README).
+
 v0.2.10
   -- revert_to* now returns `self` if the requested version is the current version
   -- revert_to* raises an exception if the requested version doesn't exist
