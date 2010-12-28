@@ -116,6 +116,14 @@ at at the first milestone. How do we do that? Simple!
 
 And now our document properties are back to the where they were when we first published the document.
 
+If you want to access the data from a milestone, simply use the "data" method: 
+    
+    a.milestones.first.data.title #==> returns the "title" attribute on the first milestone
+    a.milestones.each do |m|
+      puts "Version: " + m.version
+      puts "Title: " + m.data.title
+    end
+
 == Attachments
 
 By default, memories doesn't version attachments. If you'd like to version attachments, simply call the `remember\_attachments!` class method in your 

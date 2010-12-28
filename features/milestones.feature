@@ -9,6 +9,15 @@ Feature: Marking versions as milestones
     Given I have a document
     When I mark that document as a milestone with an annotation
     Then I should be able to retrieve that annotation from the milestone properties
+  
+  @focus
+  Scenario: Accessing the milestone version data
+    Given I have a document
+    When I mark that document as a milestone
+    And I access the #data property on the latest milestone
+    Then it should return the version corresponding to that milestone
+    When I create another milestone
+    Then I should be able to access the data for both milestones
 
   Scenario Outline: Reverting to a milestone
     Given I have a document with 5 milestones 

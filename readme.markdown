@@ -102,12 +102,13 @@ they published as a milestone.
     end
 
 Notice that we annotated our milestone; we gave it a name, and some notes. You can annotate with whatever properties you desire. The annotation do block is entirely optional.
-Now that we've created a milestone, let's inspect it: 
+Now that we've created a milestone, let's inspect it via the `milestones` array: 
 
     a.milestones.count #==> 1
-    a.latest_milestone.version # ==> 1
-    a.latest_milestone.annotations.name ==> "First publish."
-    a.latest_milestone.annotations.notes ==> "Passed all relevant editing. Signed off by moonmaster 10000"
+    a.milestones.last.version # ==> 1
+    a.milestones.last.version # ==> 1
+    a.milestones.last.annotations.name ==> "First publish."
+    a.milestones.last.annotations.notes ==> "Passed all relevant editing. Signed off by moonmaster 10000"
 
 Now, let's imagine that we've made some more edits / saves to the document, but they don't get approved. Now we want to revert to the version the document was
 at at the first milestone. How do we do that? Simple!
@@ -115,6 +116,14 @@ at at the first milestone. How do we do that? Simple!
     a.revert_to_milestone! 1
 
 And now our document properties are back to the where they were when we first published the document.
+
+If you want to access the data from a milestone, simply use the "data" method: 
+    
+    a.milestones.first.data.title #==> returns the "title" attribute on the first milestone
+    a.milestones.each do |m|
+      puts "Version: " + m.version
+      puts "Title: " + m.data.title
+    end
 
 ## Attachments
 
