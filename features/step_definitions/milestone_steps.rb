@@ -20,8 +20,15 @@ end
 
 Then /^I should be able to retrieve that annotation from the milestone properties$/ do
   @book.latest_milestone.annotations.name.should == "First Milestone!"
+  @book.milestones.last.annotations.name.should == "First Milestone!" 
   @book.latest_milestone.annotations.notes.should == "This milestone is the first milestone ever created!"
+  @book.milestones.last.annotations.notes.should == "This milestone is the first milestone ever created!"
 end
+
+When /^I re\-retrieve that document from the database$/ do
+  @book = Book.get @book.id
+end
+
 
 Given /^I have a document with (\d+) milestones$/ do |num_milestones|
   num_milestones = num_milestones.to_i

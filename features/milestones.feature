@@ -4,11 +4,15 @@ Feature: Marking versions as milestones
     Given I have a document
     When I mark that document as a milestone
     Then that revision should show up as the newest milestone
-
+  
+  @focus
   Scenario: Annotating a milestone
     Given I have a document
     When I mark that document as a milestone with an annotation
     Then I should be able to retrieve that annotation from the milestone properties
+    When I re-retrieve that document from the database
+    Then I should be able to retrieve that annotation from the milestone properties
+ 
   
   @focus
   Scenario: Accessing the milestone version data

@@ -3,7 +3,15 @@ module Memories
   def self.included(base)
     base.property(:milestone_memories) do |milestone_memory|
       milestone_memory.property :version
-      milestone_memory.property :annotations, Memories::Annotation
+      milestone_memory.property :annotations, 
+        Memories::Annotation, 
+        :init_method => proc { |value| 
+          a = Memories::Annotation.new
+          value.keys.each do |key|
+            a.send key, value[key]
+          end
+          a
+        }
     end
 
     base.before_update :add_version_attachment
@@ -237,7 +245,7 @@ module Memories
   def milestone!(&block)
     annotations = Memories::Annotation.new
     annotations.instance_eval(&block) if block
-    self.milestone_memories << {:version => self.rev, :annotations => annotations}
+    self.milestone_memories << {:version => self.rev, :annotations => annotations.to_hash}
     self.save
   end
 
