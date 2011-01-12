@@ -18,7 +18,7 @@ Feature: Marking versions as milestones
   Scenario: Accessing the milestone version data
     Given I have a document
     When I mark that document as a milestone
-    And I access the #data property on the latest milestone
+    And I access the #instance property on the latest milestone
     Then it should return the version corresponding to that milestone
     When I create another milestone
     Then I should be able to access the data for both milestones

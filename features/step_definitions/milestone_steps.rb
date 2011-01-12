@@ -51,8 +51,8 @@ Then /^the document should contain the properties of milestone (\d+)$/ do |miles
   @book.name.should == "book name #{(milestone_number.to_i * 2) - 1}"
 end
 
-When /^I access the #data property on the latest milestone$/ do 
-  @milestone_version = @book.milestones.last.data
+When /^I access the #instance property on the latest milestone$/ do 
+  @milestone_version = @book.milestones.last.instance
 end
 
 Then /^it should return the version corresponding to that milestone$/ do
@@ -67,6 +67,6 @@ end
 
 Then /^I should be able to access the data for both milestones$/ do
   @book.milestones.count.should == 2
-  @book.milestones.first.data.name.should == "milestone test"
-  @book.milestones.last.data.name.should == "milestone 2"
+  @book.milestones.first.instance.name.should == "milestone test"
+  @book.milestones.last.instance.name.should == "milestone 2"
 end

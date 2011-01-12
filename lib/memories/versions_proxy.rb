@@ -6,78 +6,44 @@ module Memories
     #   doc.versions.class # ==> ::Memories::VersionsProxy
     def initialize(doc)
       @doc = doc
-      @versions = {}
-    end
-    
-    # Returns the number of versions of your document.
-    #   doc = Book.create :name => '2001'
-    #   doc.name = '2001: A Space Odyssey'
-    #   doc.save
-    #   doc.versions.count # ==> 2
-    def count
-      @doc.current_version
+      @versions = []
     end
 
-    # Returns the first version of your document
-    #   doc = Book.create :name => '2001'
-    #   doc.name = '2001: A Space Odyssey'
-    #   doc.save
-    #   doc.versions.first.name # ==> '2001'
-    def first
-      @doc.current_version == 1 ? @doc.dup : version_num(1)
-    end
-
-    # Returns the last version of your document (which should be the same as your document)    
-    #   doc = Book.create :name => '2001'
-    #   doc.name = '2001: A Space Odyssey'
-    #   doc.save
-    #   doc.versions.last.name # ==> '2001: A Space Odyssey'
-    def last
-      @doc.dup
-    end
-
-    # Provides array-like and hash-like access to the versions of your document.
-    #   @doc.versions[1] # ==> returns version 1 of your document
-    #   @doc.versions['rev-1-kjfdsla3289430289432'] # ==> returns version 1 of your document
-    #   @doc.versions[5..20] # ==> returns versions 5 through 20 of your document
-    #   @doc.versions.count # ==> returns the number of versions of your document
-    #   @doc.versions.last # ==> returns the latest version of your document
-    #   @doc.versions.first # ==> returns the first version of your document
-    def [](arg)
-      case arg.class.to_s
-        when "Range" then version_range arg
-        when "Fixnum" then version_num arg
-        when "String" then version_id arg
-        else raise "Invalid argument."
-      end
-    end
-
-    # Iterate through all versions
-    #     @doc.versions.each {|v| puts v.some_property}
-    def each(&block)
-      version_range(1..@doc.current_version).each &block
+    def method_missing(method_name, *args, &block)
+      populate_proxies
+      @versions.send(method_name, *args, &block)
     end
 
     private
-    def version_range(range)
-      sanitize_range(range).to_a.map {|i| version_num i}
+    def populate_proxies
+      if (@versions.count - 1) < @doc.current_version.to_i
+        (1..@doc.current_version.to_i).each do |i|
+          @versions[i] ||= VersionProxy.new @doc, i
+        end
+      end
+    end
+  end
+
+  class VersionProxy
+    attr_reader :version_number
+
+    def initialize(doc, version_number)
+      @doc = doc
+      @version_number = version_number
+    end
+    
+    def version
+      @version ||= @doc.version_id @version_number
     end
 
-    def version_num(num)
-      return nil if !num.kind_of?(Fixnum) or num > @doc.current_version or num < 1
-      @versions[num] ||= @doc.dup.revert_to(num)
+    def milestone?
+      puts "version = #{version.inspect}"
+      puts "milestone versions = #{@doc.milestones.collect(&:version).inspect}"
+      @is_milestone ||= @doc.milestones.collect(&:version).include? version.gsub("rev-", "")
     end
 
-    def sanitize_range(range)
-      raise StandardError, "Sorry, but we don't allow negative numbers in the range." if range.first < 0 or range.last < 0
-      return [] if range.first > @doc.current_version
-      first = [1, range.first].max
-      last  = [range.last, @doc.current_version].min
-      (first..last)
-    end
-
-    def version_id(id)
-      version_num @doc.version_number(id)
+    def instance
+      @instance ||= @doc.dup.revert_to @version_number
     end
   end
 end

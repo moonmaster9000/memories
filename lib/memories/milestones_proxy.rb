@@ -79,10 +79,11 @@ module Memories
     def initialize(doc, milestone_metadata)
       @doc = doc
       @milestone_metadata = milestone_metadata
+      @version_number = @doc.version_number @milestone_metadata.version
     end
 
-    def data
-      @doc.versions[@milestone_metadata.version]
+    def instance
+      @instance ||= @doc.versions[@version_number].instance
     end
 
     def method_missing(method_name, *args, &block)
