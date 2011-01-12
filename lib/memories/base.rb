@@ -310,7 +310,7 @@ module Memories
 
   # Returns the metadata (version, annotations) for the latest milestone created.
   def latest_milestone
-    self.milestone_memories.last
+    self.milestones.last
   end
 
   private
