@@ -1,3 +1,6 @@
+v0.2.14
+  -- fixed a bug where the #latest_milestone method returned the latest milestone directly from the milestone_memories property, and not via the #milestones proxy.
+
 v0.2.13
   -- fixed a bug where milestone annotations weren't casted properly (https://github.com/moonmaster9000/memories/commit/e4f8bf2cd11dd334b0452c948cf535172613a6e3)
 
