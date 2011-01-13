@@ -131,36 +131,36 @@ If you want to access the version instance of a milestone, simply use the "data"
 By default, memories doesn't version attachments. If you'd like to version attachments, simply call the `remember_attachments!` class method in your 
 class definition: 
 
-  class MyDoc < CouchRest::Model::Base
-    use_database MY_DB
-    include Memories
+    class MyDoc < CouchRest::Model::Base
+      use_database MY_DB
+      include Memories
 
-    remember_attachments!
-  end
+      remember_attachments!
+    end
 
 If you only want specific attachments versioned, pass 
 strings and/or regular expressions to this macro. Any attachments
 with matching names will be versioned.
 
-  class HtmlPage < CouchRest::Model::Base
-    use_database MY_DB
-    include Memories
+    class HtmlPage < CouchRest::Model::Base
+      use_database MY_DB
+      include Memories
 
-    remember_attachments! "image.png", %r{stylesheets/.*}
-  end
+      remember_attachments! "image.png", %r{stylesheets/.*}
+    end
 
 ## Accessing Previous Versions
 
 You can access old versions of your document via the "versions" method; it will return a proxy with array-like and hash-like access to previous versions.
 
-  @doc.versions[1].instance # ==> returns version 1 of your document
-  @doc.versions[1].revision # ==> 'rev-1-jkfldsi32849032894032'
-  @doc.versions[1].version_number # ==> 1
-  @doc.versions['rev-1-kjfdsla3289430289432'].instance # ==> returns version 1 of your document
-  @doc.versions[1..7] # ==> returns version proxies 1 through 7 of your document
-  @doc.versions.count # ==> returns the number of versions of your document
-  @doc.versions.last # ==> returns a proxy for the latest version of your document
-  @doc.versions.first # ==> returns a proxy for the first version of your document
-  @doc.versions.each do |v|
-    puts v.instance.some_property
-  end
+    @doc.versions[1].instance # ==> returns version 1 of your document
+    @doc.versions[1].revision # ==> 'rev-1-jkfldsi32849032894032'
+    @doc.versions[1].version_number # ==> 1
+    @doc.versions['rev-1-kjfdsla3289430289432'].instance # ==> returns version 1 of your document
+    @doc.versions[1..7] # ==> returns version proxies 1 through 7 of your document
+    @doc.versions.count # ==> returns the number of versions of your document
+    @doc.versions.last # ==> returns a proxy for the latest version of your document
+    @doc.versions.first # ==> returns a proxy for the first version of your document
+    @doc.versions.each do |v|
+      puts v.instance.some_property
+    end
