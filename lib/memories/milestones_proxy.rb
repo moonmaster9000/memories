@@ -35,8 +35,8 @@ module Memories
   #Now that we've created a milestone, let's inspect it via the `milestones` array: 
   #
   #    a.milestones.count #==> 1
-  #    a.milestones.last.version # ==> 1
-  #    a.milestones.last.version # ==> 1
+  #    a.milestones.last.version # ==> 'rev-1-reiwurieowu9340289032804932krew'
+  #    a.milestones.last.version_number # ==> 1
   #    a.milestones.last.annotations.name ==> "First publish."
   #    a.milestones.last.annotations.notes ==> "Passed all relevant editing. Signed off by moonmaster10000"
   #

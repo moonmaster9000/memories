@@ -12,6 +12,13 @@ Feature: Easily accessing previous versions
     When I call the [] method on the proxy with an integer that does not correspond to a version
     Then I should get back nil
 
+  Scenario: The "versions" array proxy should accept a string
+    Given a "versions" array proxy for a document
+    When I call the [] method on the proxy with a string corresponding to a valid version
+    Then I should get back a version proxy for that version of the document
+    When I call the [] method on the proxy with a string that does not correspond to a valid version
+    Then I should get back nil
+
   Scenario: The "versions" array proxy accessed with a range that contains only valid versions
     Given a "versions" array proxy for a document
     When I call the [] method on the proxy with a range of valid versions

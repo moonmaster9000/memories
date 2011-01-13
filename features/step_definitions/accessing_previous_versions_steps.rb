@@ -72,7 +72,7 @@ When /^I call the \[\] method on the proxy with a string corresponding to a vali
   @version = @versions[@doc["_attachments"].keys.sort.first]
 end
 
-When /^I call the \[\] method on the proxy with an string that does not correspond to a valid version$/ do
+When /^I call the \[\] method on the proxy with a string that does not correspond to a valid version$/ do
   @version = @versions['jkfldsajklfdsa']
 end
 

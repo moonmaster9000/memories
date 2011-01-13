@@ -105,10 +105,11 @@ Notice that we annotated our milestone; we gave it a name, and some notes. You c
 Now that we've created a milestone, let's inspect it via the `milestones` array: 
 
     a.milestones.count #==> 1
-    a.milestones.last.version # ==> 1
-    a.milestones.last.version # ==> 1
-    a.milestones.last.annotations.name ==> "First publish."
-    a.milestones.last.annotations.notes ==> "Passed all relevant editing. Signed off by moonmaster 10000"
+    a.milestones.last.version # ==> 'rev-1-893428ifldlfds9832'
+    a.milestones.last.version_number # ==> 1
+    a.milestones.last.annotations.name # ==> "First publish."
+    a.milestones.last.annotations.notes # ==> "Passed all relevant editing. Signed off by moonmaster 10000"
+    a.milestones.last.instance.title # ==> Memories gem makes versioning simple
 
 Now, let's imagine that we've made some more edits / saves to the document, but they don't get approved. Now we want to revert to the version the document was
 at at the first milestone. How do we do that? Simple!
@@ -152,9 +153,11 @@ with matching names will be versioned.
 
 You can access old versions of your document via the "versions" method; it will return a proxy with array-like and hash-like access to previous versions.
 
-  @doc.versions[1] # ==> returns version 1 of your document
-  @doc.versions['rev-1-kjfdsla3289430289432'] # ==> returns version 1 of your document
-  @doc.versions[5..20] # ==> returns versions 5 through 20 of your document
+  @doc.versions[1].instance # ==> returns version 1 of your document
+  @doc.versions[1].revision # ==> 'rev-1-jkfldsi32849032894032'
+  @doc.versions[1].version_number # ==> 1
+  @doc.versions['rev-1-kjfdsla3289430289432'].instance # ==> returns version 1 of your document
+  @doc.versions[1..7] # ==> returns version proxies 1 through 7 of your document
   @doc.versions.count # ==> returns the number of versions of your document
   @doc.versions.last # ==> returns the latest version of your document
   @doc.versions.first # ==> returns the first version of your document
