@@ -37,9 +37,7 @@ module Memories
     end
 
     def milestone?
-      puts "version = #{version.inspect}"
-      puts "milestone versions = #{@doc.milestones.collect(&:version).inspect}"
-      @is_milestone ||= @doc.milestones.collect(&:version).include? version.gsub("rev-", "")
+      @is_milestone ||= @doc.milestones.collect(&:version).include? version
     end
 
     def instance

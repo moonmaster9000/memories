@@ -3,7 +3,7 @@ Given /^I have a document$/ do
 end
 
 When /^I mark that document as a milestone$/ do
-  @milestone_version = @book.rev
+  @milestone_version = "rev-" + @book.rev
   @book.milestone!
 end
 
