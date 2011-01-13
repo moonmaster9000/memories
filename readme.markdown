@@ -159,8 +159,8 @@ You can access old versions of your document via the "versions" method; it will 
   @doc.versions['rev-1-kjfdsla3289430289432'].instance # ==> returns version 1 of your document
   @doc.versions[1..7] # ==> returns version proxies 1 through 7 of your document
   @doc.versions.count # ==> returns the number of versions of your document
-  @doc.versions.last # ==> returns the latest version of your document
-  @doc.versions.first # ==> returns the first version of your document
+  @doc.versions.last # ==> returns a proxy for the latest version of your document
+  @doc.versions.first # ==> returns a proxy for the first version of your document
   @doc.versions.each do |v|
-    puts v.some_property
+    puts v.instance.some_property
   end
