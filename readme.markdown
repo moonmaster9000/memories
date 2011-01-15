@@ -164,3 +164,28 @@ You can access old versions of your document via the "versions" method; it will 
     @doc.versions.each do |v|
       puts v.instance.some_property
     end
+
+## Logical Revision Numbers
+
+As of version 0.3.1, when you soft revert a document (#revert_to), you can access the logical revision and logical version numbers of that document. 
+
+For example, suppose you soft revert a document with 10 versions to version 2. 
+    
+    @doc.current_version # ==> 10 
+    @doc.revert_to 2
+
+When you ask the logical revision, you'll receive the revision number of version 2:
+    
+    @doc.logical_revision #==> 'rev-2-kfdlsa432890432890432'
+
+Similarly, the logical version number:
+
+    @doc.logical_version_number #==> 2
+
+However, as soon as you save the document, the logical revision and logical version number will simply mirror those of the actual document
+    
+    @doc.save
+    @doc.rev #==> '11-qwerty1234567890'
+    @doc.logical_revision #==> 'rev-11-qwerty1234567890'
+    @doc.logical_version_number #==> 11
+

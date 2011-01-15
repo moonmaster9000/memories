@@ -17,6 +17,8 @@ module Memories
     base.before_update :add_version_attachment
     base.after_save :decode_attachments
     base.send :extend, ClassMethods
+    base.alias_method_chain :save, :destroying_logical_version_and_revision
+    base.alias_method_chain :save!, :destroying_logical_version_and_revision
   end
   
   module ClassMethods #:nodoc: all
@@ -313,6 +315,45 @@ module Memories
     self.milestones.last
   end
 
+  # When you soft revert a document, you can ask what the logical revision of it is.
+  # For example, suppose you soft revert a document with 10 versions to version 2. 
+  #     @doc.revert_to 2
+  # When you ask the logical revision, you'll receive the revision number of version 2:
+  #     @doc.logical_revision #==> 'rev-2-kfdlsa432890432890432'
+  # However, as soon as you save the document, the logical_revision will simply mirror the actual revision
+  #     @doc.save
+  #     @doc.rev #==> '11-qwerty1234567890'
+  #     @doc.logical_revision #==> 'rev-11-qwerty1234567890'
+  def logical_revision
+    @logical_revision || "rev-" + self.rev 
+  end
+
+  # When you soft revert a document, you can ask what the logical version number of it is.
+  # For example, suppose you soft revert a document with 10 versions to version 2. 
+  #   @doc.revert_to 2
+  # When you ask the logical version number, you'll receive 2:
+  #   @doc.logical_version_number #==> 2
+  # However, as soon as you save the document, the logical_revision will simply mirror the actual revision
+  #   @doc.save
+  #   @doc.current_version #==> 11
+  #   @doc.logical_version_number #==> 11
+  def logical_version_number
+    @logical_version_number || self.current_version
+  end
+
+  def save_with_destroying_logical_version_and_revision
+    @logical_version_number = nil
+    @logical_revision = nil
+    save_without_destroying_logical_version_and_revision
+  end
+
+  def save_with_destroying_logical_version_and_revision!
+    @logical_version_number = nil
+    @logical_revision = nil
+    save_without_destroying_logical_version_and_revision!
+  end
+
+
   private
   def verify_milestone_exists(n)
     raise StandardError, "This document does not have any milestones." if self.milestones.empty?
@@ -333,6 +374,8 @@ module Memories
     if properties = JSON.parse(self.read_attachment(version_id version))
       revert_attachments properties
       self.update_attributes_without_saving properties
+      @logical_version_number = version
+      @logical_revision = self.version_id version
       self.save if revert_type == :hard
     end
   end
