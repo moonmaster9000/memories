@@ -70,3 +70,23 @@ Then /^I should be able to access the data for both milestones$/ do
   @book.milestones.first.instance.name.should == "milestone test"
   @book.milestones.last.instance.name.should == "milestone 2"
 end
+
+Given /^the current version is not a milestone$/ do
+  @book.milestone?.should be_false
+end
+
+When /^I call the \#milestone\? method$/ do
+  @is_milestone = @book.milestone?
+end
+
+When /^I soft revert the document to one of those milestones$/ do
+  @book = @book.versions[2].instance
+end
+
+When /^I soft revert the document to a version right after a milestone$/ do
+  @book = @book.versions[3].instance
+end
+
+When /^I call the \#milestone_commit\? method$/ do
+  @is_milestone = @book.milestone_commit?
+end

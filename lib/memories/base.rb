@@ -315,6 +315,16 @@ module Memories
     self.milestones.last
   end
 
+  # Returns true if this instance represents a milestone
+  def milestone?
+    self.milestones.collect(&:version_number).include? self.logical_version_number
+  end
+
+  # Returns true if this instance is the version made right after a milestone, to denote the previous version as a milestone.
+  def milestone_commit?
+    self.milestones.collect(&:version_number).include? self.logical_version_number - 1
+  end
+
   # When you soft revert a document, you can ask what the logical revision of it is.
   # For example, suppose you soft revert a document with 10 versions to version 2. 
   #     @doc.revert_to 2

@@ -1,3 +1,9 @@
+v0.3.2
+  -- added #milestone? and #milestone_commit? methods
+
+v0.3.1
+  -- added #logical_version_number and #logical_revision methods. See the README.
+
 v0.3.0
   -- milestones and versions proxy unified. See the README on details. API not backwards compatible. You'll need to change your code. 
 
