@@ -1,3 +1,6 @@
+v0.3.3
+  -- now requires couchrest_model ~> 1.0.0
+
 v0.3.2
   -- added #milestone? and #milestone_commit? methods
 
