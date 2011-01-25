@@ -169,3 +169,32 @@ end
 Then /^I should receive the instance corresponding to that version of the document$/ do
   @instance.name.should == "version 1"
 end
+
+Given /^a document with versions and timestamps$/ do
+  @version_2_updated_at = Time.parse('2011-01-01 10:30')
+  @current_version_updated_at = Time.parse('2011-01-15 10:40')
+  
+  @doc = BookWithTimestamp.create :name => 'version 1'
+  @doc.overwrite_timestamp_with(@version_2_updated_at)
+  (2..4).each do |i|  
+    @doc.overwrite_timestamp_with(@current_version_updated_at) if i == 4
+    @doc.name = "version #{i}"
+    @doc.save
+  end
+end
+
+When /^I access the "updated_at" property for current version$/ do 
+  @updated_at_for_version = { :version => 'current_version', :updated_at => @doc.updated_at }
+end
+
+When /^I access the "updated_at" property for version 2$/ do 
+  @updated_at_for_version = { :version => 2, :updated_at => @doc.versions[2].instance.updated_at }
+end 
+
+Then /^I should get the correct "updated_at" value$/ do
+  if @updated_at_for_version[:version] == 2 
+    @updated_at_for_version[:updated_at].should == @version_2_updated_at
+  elsif @updated_at_for_version[:version] == 'current_version'
+    @updated_at_for_version[:updated_at].should == @current_version_updated_at
+  end
+end

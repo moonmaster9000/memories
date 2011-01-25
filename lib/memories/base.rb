@@ -384,6 +384,7 @@ module Memories
     if properties = JSON.parse(self.read_attachment(version_id version))
       revert_attachments properties
       self.update_attributes_without_saving properties
+      overwrite_timestamp(properties)
       @logical_version_number = version
       @logical_revision = self.version_id version
       self.save if revert_type == :hard
@@ -455,4 +456,10 @@ module Memories
       self["_attachments"][attachment_id]["data"] = Base64.decode64 attachment_properties["data"] if attachment_properties["data"] 
     end if self["_attachments"]
   end
+  
+  def overwrite_timestamp(properties)
+    timestamp = 'updated_at'
+    write_attribute(timestamp, Time.parse(properties[timestamp])) if properties.keys.include?(timestamp)
+  end
+  
 end

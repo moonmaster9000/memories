@@ -73,3 +73,10 @@ Feature: Easily accessing previous versions
     Given a "versions" array proxy for a document
     When I call the #each method with a block
     Then I should be able to iterate through all versions of the document
+  
+  Scenario: Setting the correct updated_at when accessing versions
+    Given a document with versions and timestamps
+    When I access the "updated_at" property for current version
+    Then I should get the correct "updated_at" value
+    When I access the "updated_at" property for version 2
+    Then I should get the correct "updated_at" value
