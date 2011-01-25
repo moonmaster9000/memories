@@ -184,17 +184,25 @@ Given /^a document with versions and timestamps$/ do
 end
 
 When /^I access the "updated_at" property for current version$/ do 
-  @updated_at_for_version = { :version => 'current_version', :updated_at => @doc.updated_at }
+  @updated_at_for_version = { 'current_version' => {:updated_at => @doc.updated_at} }
 end
 
 When /^I access the "updated_at" property for version 2$/ do 
-  @updated_at_for_version = { :version => 2, :updated_at => @doc.versions[2].instance.updated_at }
+  @updated_at_for_version = { '2' => {:updated_at => @doc.versions[2].instance.updated_at} }
 end 
 
 Then /^I should get the correct "updated_at" value$/ do
-  if @updated_at_for_version[:version] == 2 
-    @updated_at_for_version[:updated_at].should == @version_2_updated_at
-  elsif @updated_at_for_version[:version] == 'current_version'
-    @updated_at_for_version[:updated_at].should == @current_version_updated_at
+  if @updated_at_for_version['2']
+    @updated_at_for_version['2'][:updated_at].should == @version_2_updated_at
+  elsif @updated_at_for_version['current_version']
+     @updated_at_for_version['current_version'][:updated_at].should == @current_version_updated_at
   end
+end
+
+When %r{^I revert the timestamped document to (version +\d+)$} do |version|
+  @doc.revert_to! version
+end
+
+Then /^I should get the correct "updated_at" value after a revert$/ do
+  @updated_at_for_version['current_version'][:updated_at].should_not == @version_2_updated_at
 end
