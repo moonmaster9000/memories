@@ -1,3 +1,7 @@
+v0.3.4
+  -- when you soft revert, the updated_at timestamp (if it exists) is changed to the value of the updated_at property
+     in the revision you reverted to. However, once you save, updated_at is of course updated to the current time.
+
 v0.3.3
   -- now requires couchrest_model ~> 1.0.0
 

@@ -459,7 +459,9 @@ module Memories
   
   def overwrite_timestamp(properties)
     timestamp = 'updated_at'
-    write_attribute(timestamp, Time.parse(properties[timestamp])) if properties.keys.include?(timestamp)
+    if (properties.keys.include?(timestamp) && old_updated_at_time = Time.parse(properties[timestamp]) rescue nil)
+      write_attribute(timestamp, old_updated_at_time)
+    end
   end
   
 end
