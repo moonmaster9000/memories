@@ -118,12 +118,12 @@ at at the first milestone. How do we do that? Simple!
 
 And now our document properties are back to the where they were when we first published the document.
 
-If you want to access the version instance of a milestone, simply use the "data" method: 
+If you want to access the version instance of a milestone, simply use the "instance" method: 
     
-    a.milestones.first.data.title #==> returns the "title" attribute on the first milestone
+    a.milestones.first.instance.title #==> returns the "title" attribute on the first milestone
     a.milestones.each do |m|
       puts "Version: " + m.version
-      puts "Title: " + m.data.title
+      puts "Title: " + m.instance.title
     end
 
 ## Attachments
