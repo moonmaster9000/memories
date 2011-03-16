@@ -351,10 +351,10 @@ module Memories
     @logical_version_number || self.current_version
   end
 
-  def save_with_destroying_logical_version_and_revision
+  def save_with_destroying_logical_version_and_revision(options={})
     @logical_version_number = nil
     @logical_revision = nil
-    save_without_destroying_logical_version_and_revision
+    save_without_destroying_logical_version_and_revision(options)
   end
 
   def save_with_destroying_logical_version_and_revision!
