@@ -23,7 +23,7 @@ module Memories
 
     def count
       populate_proxies
-      @versions.count - 1
+      @versions.count == 0 ? 0 : @versions.count - 1
     end
 
     def [](arg)
@@ -43,7 +43,7 @@ module Memories
 
     private
     def populate_proxies
-      if (@versions.count - 1) < @doc.current_version.to_i
+      if !@doc.new_record? && (@versions.count - 1) < @doc.current_version.to_i
         (1..@doc.current_version.to_i).each do |i|
           @versions[i] ||= VersionProxy.new @doc, i
         end
